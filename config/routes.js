@@ -1,31 +1,11 @@
-var mongoose = require('mongoose');
-var Task = mongoose.model('Task');
-
+var tasks = require('./../server/controllers/tasks.js');
 module.exports = function Routes(app) {
-
-	var error = '';
-
-	app.get('/', function(req, res) {
-		Task.find({}, function(err, tasks) {
-			res.render('index', { title: 'Task Management', tasks: tasks, errors: error })
-			error = '';
-		})
-	})
-	app.post('/tasks/create', function(req, res) {
-		console.log(req.body)
-		var a = new Task(req.body);
-		a.save(function(err) {
-			if(err) {
-				error = err;
-				res.redirect('/');
-			} else {
-				res.redirect('/');
-			}
-		})
-	})
-	app.post('/tasks/delete/:id', function(req, res) {
-		Task.remove( { '_id': req.params.id }, function(err, a) {
-			res.redirect('/');
-		});
-	})
+	app.get('/', function(req,res) { tasks.index(req,res) });
+	app.get('/tasks', function(req,res) { tasks.index(req,res) });
+	app.get('/tasks/index.json', function(req,res) {tasks.index_json(req,res)});
+	app.get('/tasks/new', function(req,res) {tasks.new(req,res) });
+	app.post('/tasks/create', function(req,res) { tasks.create(req,res) });
+	app.get('/tasks/:id', function(req,res) { tasks.show(req,res) });
+	app.get('/tasks/:id/edit', function(req,res) { tasks.edit(req,res) });
+	app.post('/tasks/newUser_json', function(req,res) {tasks.newUser_json(req,res) });
 }

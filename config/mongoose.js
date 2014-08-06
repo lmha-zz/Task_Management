@@ -1,4 +1,6 @@
 var mongoose = require('mongoose'),
+	env = process.env.NODE_ENV || 'development',
+	config = require('./config')[env],
 	fs = require('fs');
 //Bootstrap db connection
 //Connect to mongodb
@@ -10,7 +12,7 @@ var connect = function() {
 			}
 		}
 	}
-	mongoose.connect('mongodb://localhost/task_management', options)
+	mongoose.connect(config.db, options)
 }
 connect();
 //Error hanlder
@@ -22,7 +24,7 @@ mongoose.connection.on('disconnected', function() {
 	connect();
 })
 //Bootstrap models
-var models_path = __dirname + '/../models';
+var models_path = __dirname + '/../server//models';
 fs.readdirSync(models_path).forEach(function(file) {
 	if (~file.indexOf('.js')) require(models_path + '/' + file)
 })
